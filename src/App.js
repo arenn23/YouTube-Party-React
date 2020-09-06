@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import HomePage from "./components/HomePage";
+import Routing from "./components/Routing";
 import "./App.css";
 import { BrowserRouter } from "react-router-dom";
 import { ConfigureStore } from "./redux/configureStore";
@@ -13,7 +13,7 @@ class App extends Component {
       <Provider store={store}>
         <BrowserRouter>
           <div className="App">
-            <HomePage />
+            <Routing />
           </div>
         </BrowserRouter>
       </Provider>

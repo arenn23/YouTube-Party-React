@@ -2,8 +2,17 @@ import React from "react";
 import { Jumbotron, Row, Col, Button } from "reactstrap";
 import logo from "../Images/templogo.jpg";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { useLocation } from "react-router-dom";
+
+const mapStateToProps = (state) => {
+  return {
+    feedbackForm: state.feedbackForm,
+  };
+};
 
 function Header(props) {
+  let location = useLocation();
   return (
     <React.Fragment>
       <Jumbotron>
@@ -18,9 +27,10 @@ function Header(props) {
               </h1>
             </div>
             <div id="roomName" className="col-lg-6">
-              {props.room ? (
+              {props.feedbackForm.roomName && location.pathname === "/room" ? (
                 <h2>
-                  Hello! Welcome to the <span> {props.room.roomName}</span> Room
+                  Hello! Welcome to the{" "}
+                  <span> {props.feedbackForm.roomName}</span> Room
                 </h2>
               ) : (
                 <div></div>
@@ -49,4 +59,4 @@ function Header(props) {
   );
 }
 
-export default Header;
+export default connect(mapStateToProps)(Header);

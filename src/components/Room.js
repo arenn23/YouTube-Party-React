@@ -2,6 +2,15 @@ import React, { Component } from "react";
 import Header from "./Header";
 import Footer from "./Footer";
 import { Button, Form, FormGroup, Label, Input, Table } from "reactstrap";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import ReactPlayer from "react-player";
+
+const mapStateToProps = (state) => {
+  return {
+    room: state.room,
+  };
+};
 
 function RenderTable(props) {
   const songs = props.data.upcomingSongs.map((song, index) => {
@@ -35,7 +44,6 @@ class Room extends Component {
       newSong: "",
       id: [...this.state.id, this.state.upcomingSongs.length],
     });
-    console.log(this.songField);
   }
 
   handleInputChange = (event) => {
@@ -50,7 +58,8 @@ class Room extends Component {
   render() {
     return (
       <>
-        <Header room={this.props.roomData} />
+        <Header />
+        <ReactPlayer controls={true} url={this.state.upcomingSongs[0]} />
 
         <div className="container">
           <div className="row">
@@ -101,4 +110,4 @@ class Room extends Component {
   }
 }
 
-export default Room;
+export default withRouter(connect(mapStateToProps)(Room));

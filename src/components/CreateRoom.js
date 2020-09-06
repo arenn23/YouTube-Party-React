@@ -1,121 +1,103 @@
 import React, { Component } from "react";
 import Header from "./Header";
-import {
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  Input,
-  FormFeedback,
-} from "reactstrap";
-import { Link } from "react-router-dom";
 import Footer from "./Footer";
+import { Control, Form, Errors } from "react-redux-form";
+import { Button, Label, Col, Row, FormGroup } from "reactstrap";
+import { withRouter } from "react-router-dom";
+
+const required = (val) => val && val.length;
+const maxLength = (len) => (val) => !val || val.length <= len;
+const minLength = (len) => (val) => val && val.length >= len;
 
 class CreateRoom extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      disabled: true,
-      feedback: "",
-      touched: {
-        roomName: false,
-        password: false,
-      },
-    };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  validate(roomName, password) {
-    const errors = {
-      roomName: "",
-      password: "",
-      i: 0,
-    };
-
-    if (this.state.touched.roomName) {
-      if (this.props.roomName.length === 0) {
-        errors.roomName = "Room name required.";
-        errors.i = 1;
-      }
-      if (this.props.roomName.length > 25) {
-        errors.roomName = "Room name must be less than 25 characters.";
-        errors.i = 1;
-      }
-    }
-    if (this.state.touched.password) {
-      if (this.props.password.length === 0) {
-        errors.password = "Password is required.";
-        errors.i = 1;
-      }
-    }
-    if (this.state.touched.password === false) {
-      errors.i = 1;
-    }
-    if (this.state.touched.roomName === false) {
-      errors.i = 1;
-    }
-
-    return errors;
+  handleSubmit(values) {
+    this.props.history.push("/room");
   }
-
-  handleBlur = (field) => () => {
-    this.setState({
-      touched: { ...this.state.touched, [field]: true },
-    });
-  };
 
   render() {
-    const errors = this.validate(this.props.roomName, this.props.password);
-    const allowSubmit = errors.i === 1 ? true : false;
-
     return (
       <>
         <Header />
         <div className="row row-content justify-content-center">
-          <Form onSubmit={this.props.handleSubmit}>
-            <FormGroup className="mt-5" row>
-              <Label htmlFor="roomName">Room Name</Label>
-              <Input
-                type="text"
-                id="roomName"
-                name="roomName"
-                placeholder="Room Name"
-                value={this.state.roomName}
-                invalid={errors.roomName}
-                onBlur={this.handleBlur("roomName")}
-                onChange={this.props.handleInputChange}
-              />
-              <FormFeedback>{errors.roomName}</FormFeedback>
-            </FormGroup>
-            <FormGroup row>
-              <Label htmlFor="password">Password</Label>
-              <Input
-                type="text"
-                id="password"
-                name="password"
-                placeholder="Password"
-                value={this.state.password}
-                invalid={errors.password}
-                onBlur={this.handleBlur("password")}
-                onChange={this.props.handleInputChange}
-              />
-              <FormFeedback>{errors.password}</FormFeedback>
-            </FormGroup>
-            <FormGroup>
-              <Link to="/room">
-                <Button
-                  disabled={allowSubmit}
-                  type="submit"
-                  size="lg"
-                  color="secondary"
-                >
-                  Enter
-                </Button>
-              </Link>
-              <Link to="/">
-                <Button className="ml-5" size="lg" color="danger">
-                  Cancel
-                </Button>
-              </Link>
+          <Form
+            model="feedbackForm"
+            onSubmit={(values) => this.handleSubmit(values)}
+          >
+            <Row className="form-group">
+              <Label className="mt-4 ml-3" htmlFor="roomName">
+                Room Name
+              </Label>
+              <Col md={12}>
+                <Control.text
+                  model=".roomName"
+                  id="roomName"
+                  name="roomName"
+                  placeholder="Room Name"
+                  className="form-control"
+                  validators={{
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(15),
+                  }}
+                />
+                <Errors
+                  className="text-danger"
+                  model=".roomName"
+                  show="touched"
+                  component="div"
+                  messages={{
+                    required: "Required",
+                    minLength: "Must be at least 2 characters",
+                    maxLength: "Must be 15 characters or less",
+                  }}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Label className="mt-1 ml-3" htmlFor="password">
+                Password
+              </Label>
+            </Row>
+            <Row>
+              <Col md={12}>
+                <Control.text
+                  model=".password"
+                  id="password"
+                  name="password"
+                  placeholder="Password"
+                  className="form-control"
+                  validators={{
+                    required,
+                    minLength: minLength(2),
+                    maxLength: maxLength(15),
+                  }}
+                />
+                <Errors
+                  className="text-danger"
+                  model=".password"
+                  show="touched"
+                  component="div"
+                  messages={{
+                    required: "Required",
+                    minLength: "Must be at least 2 characters",
+                    maxLength: "Must be 15 characters or less",
+                  }}
+                />
+              </Col>
+            </Row>
+            <FormGroup className="mt-3">
+              <Button type="submit" size="lg" color="secondary">
+                Enter
+              </Button>
+              <Button className="ml-5" size="lg" color="danger">
+                Cancel
+              </Button>
             </FormGroup>
           </Form>
         </div>
@@ -125,4 +107,4 @@ class CreateRoom extends Component {
   }
 }
 
-export default CreateRoom;
+export default withRouter(CreateRoom);

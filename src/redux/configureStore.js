@@ -1,14 +1,17 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import logger from "redux-logger";
-import { Rooms } from "./room";
 import thunk from "redux-thunk";
+import { createForms } from "react-redux-form";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { InitialFeedback } from "./form";
 
 export const ConfigureStore = () => {
   const store = createStore(
     combineReducers({
-      rooms: Rooms,
+      ...createForms({
+        feedbackForm: InitialFeedback,
+      }),
     }),
-    applyMiddleware(thunk, logger)
+    composeWithDevTools(applyMiddleware(thunk))
   );
 
   return store;
